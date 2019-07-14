@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:ExoPlayerWrapper.Controls"
+             mc:Ignorable="d"
+             x:Class="ExoPlayerWrapper.Views.MainPage"
+             BackgroundColor="Black">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <controls:VideoView Grid.ColumnSpan="3" />
+        <Button
+            Grid.Column="0"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Text="-15"
+            TextColor="Black"
+            BackgroundColor="White"
+            Command="{Binding BackwardCommand}" />
+        <Button
+            Grid.Column="1"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Text="Play"
+            TextColor="Black"
+            BackgroundColor="White"
+            CornerRadius="10"
+            Command="{Binding PlayPauseCommand}" />
+        <Button
+            Grid.Column="2"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Text="+15"
+            TextColor="Black"
+            BackgroundColor="White"
+            Command="{Binding ForwardCommand}" />
+        <StackLayout
+            Grid.ColumnSpan="3"
+            HorizontalOptions="End"
+            Padding="10">
+            <Slider
+                Minimum="0"
+                Maximum="1"
+                MinimumTrackColor="Red"
+                ThumbColor="Red"
+                Value="{Binding SliderValue}"
+            />
+        </StackLayout>
+    </Grid>
+</ContentPage>
