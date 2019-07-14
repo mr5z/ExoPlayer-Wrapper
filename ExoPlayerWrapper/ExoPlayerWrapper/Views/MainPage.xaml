@@ -39,17 +39,24 @@
             TextColor="Black"
             BackgroundColor="White"
             Command="{Binding ForwardCommand}" />
-        <StackLayout
+        <Grid
             Grid.ColumnSpan="3"
-            HorizontalOptions="End"
+            VerticalOptions="End"
             Padding="10">
             <Slider
                 Minimum="0"
                 Maximum="1"
-                MinimumTrackColor="Red"
+                MinimumTrackColor="White"
+                ThumbColor="Transparent"
+                Value="{Binding BufferedStreamValue}"
+            />
+            <Slider
+                Minimum="0"
+                Maximum="1"
+                MinimumTrackColor="#80ff0000"
                 ThumbColor="Red"
                 Value="{Binding SliderValue}"
             />
-        </StackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

@@ -10,9 +10,9 @@ namespace ExoPlayerWrapper.Controls
         event EventHandler<PositionChangedEventArgs> CurrentPositionChanged;
         event EventHandler<VideoStateChangedEventArgs> VideoStateChanged;
 
-        public void ReportCurrentPositionChanged(TimeSpan newPosition)
+        public void ReportCurrentPositionChanged(TimeSpan newPosition, TimeSpan newBufferedPosition)
         {
-            CurrentPositionChanged?.Invoke(this, new PositionChangedEventArgs(newPosition));
+            CurrentPositionChanged?.Invoke(this, new PositionChangedEventArgs(newPosition, newBufferedPosition));
         }
 
         public void ReportVideoStateChanged(VideoState newState)

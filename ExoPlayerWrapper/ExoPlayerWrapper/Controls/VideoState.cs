@@ -9,9 +9,9 @@ namespace ExoPlayerWrapper.Controls
         NotReady,
         Configured,
         Idle,
-        Ready,
         Playing,
         Paused,
+        Stopped,
         Buffering
     }
 }

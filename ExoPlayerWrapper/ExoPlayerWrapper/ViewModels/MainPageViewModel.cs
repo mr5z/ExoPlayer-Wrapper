@@ -34,7 +34,17 @@ namespace ExoPlayerWrapper.ViewModels
 
         private void VideoService_CurrentPositionChanged(object sender, PositionChangedEventArgs e)
         {
-            Debug.Log("position: {0}", e.NewPosition);
+            if (videoService.Status == VideoState.Playing)
+            {
+                var duration = videoService.Duration.TotalMilliseconds;
+                var position = e.NewPosition.TotalMilliseconds;
+                var bufferPosition = e.NewBufferedPosition.TotalMilliseconds;
+                var positionPercent = position / duration;
+                var bufferedPercent = bufferPosition / duration;
+                Debug.Log("Percent: {0}", positionPercent);
+                SliderValue = positionPercent;
+                BufferedStreamValue = bufferedPercent;
+            }
         }
 
         private void VideoService_VideoStateChanged(object sender, VideoStateChangedEventArgs e)
@@ -42,6 +52,7 @@ namespace ExoPlayerWrapper.ViewModels
             switch (e.NewState)
             {
                 case VideoState.Configured:
+                    //videoService.ShowDefaultControls = false;
                     videoService.Load("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
                     videoService.Play();
                     isPlaying = true;
@@ -96,6 +107,8 @@ namespace ExoPlayerWrapper.ViewModels
         }
 
         public double SliderValue { get; set; }
+
+        public double BufferedStreamValue { get; set; }
 
         public DelegateCommand ForwardCommand { get; set; }
         public DelegateCommand BackwardCommand { get; set; }

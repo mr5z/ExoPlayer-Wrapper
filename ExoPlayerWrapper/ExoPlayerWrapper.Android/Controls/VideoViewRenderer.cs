@@ -53,6 +53,7 @@ public class VideoViewRenderer : ViewRenderer<VideoView, PlayerView>, IVideoPlay
     {
         if (disposing)
         {
+            player.RemoveListener(this);
             player.Release();
         }
         base.Dispose(disposing);
@@ -61,12 +62,16 @@ public class VideoViewRenderer : ViewRenderer<VideoView, PlayerView>, IVideoPlay
     private void StartPositionListenerInterval()
     {
         timerIsRunning = true;
-        Xamarin.Forms.Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
         {
-            if (Status != VideoState.NotReady && Status != VideoState.Configured)
+            if (Status == VideoState.Playing)
             {
-                ReportPositionChanged(CurrentPosition);
+                ReportPositionChanged(CurrentPosition, BufferedPosition);
             }
+            timerIsRunning = timerIsRunning &&
+                Status != VideoState.NotReady &&
+                Status != VideoState.Configured &&
+                Status != VideoState.Stopped;
             return timerIsRunning;
         });
     }
@@ -83,15 +88,23 @@ public class VideoViewRenderer : ViewRenderer<VideoView, PlayerView>, IVideoPlay
         Element.ReportVideoStateChanged(newState);
     }
 
-    private void ReportPositionChanged(TimeSpan newPosition)
+    private void ReportPositionChanged(TimeSpan newPosition, TimeSpan newBufferedPosition)
     {
-        CurrentPositionChanged?.Invoke(this, new PositionChangedEventArgs(newPosition));
-        Element.ReportCurrentPositionChanged(newPosition);
+        CurrentPositionChanged?.Invoke(this, new PositionChangedEventArgs(newPosition, newBufferedPosition));
+        Element.ReportCurrentPositionChanged(newPosition, newBufferedPosition);
+    }
+
+    public bool ShowDefaultControls
+    {
+        get => Control.UseController;
+        set => Control.UseController = value;
     }
 
     public TimeSpan Duration => TimeSpan.FromMilliseconds(player.Duration);
 
     public TimeSpan CurrentPosition => TimeSpan.FromMilliseconds(player.CurrentPosition);
+
+    public TimeSpan BufferedPosition => TimeSpan.FromMilliseconds(player.BufferedPosition);
 
     public VideoState Status { get; private set; }
 
@@ -108,18 +121,22 @@ public class VideoViewRenderer : ViewRenderer<VideoView, PlayerView>, IVideoPlay
     public void Pause()
     {
         player.PlayWhenReady = false;
-        ReportVideoState(VideoState.Paused);
     }
 
     public void Play()
     {
         player.PlayWhenReady = true;
-        ReportVideoState(VideoState.Playing);
+    }
+
+    public void Stop()
+    {
+        player.Stop();
     }
 
     public void SeekTo(TimeSpan position)
     {
         var newPosition = Math.Clamp(position.TotalMilliseconds, 0, Duration.TotalMilliseconds);
+        ReportPositionChanged(TimeSpan.FromMilliseconds(newPosition), BufferedPosition);
         player.SeekTo((long)newPosition);
     }
 
@@ -157,12 +174,13 @@ public class VideoViewRenderer : ViewRenderer<VideoView, PlayerView>, IVideoPlay
                 ReportVideoState(VideoState.Buffering);
                 break;
             case Player.StateEnded:
+                ReportVideoState(VideoState.Stopped);
                 break;
             case Player.StateIdle:
                 ReportVideoState(VideoState.Idle);
                 break;
             case Player.StateReady:
-                ReportVideoState(VideoState.Ready);
+                ReportVideoState(playWhenReady ? VideoState.Playing : VideoState.Paused);
                 break;
         }
     }

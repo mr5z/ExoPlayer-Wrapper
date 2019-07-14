@@ -25,9 +25,17 @@ namespace ExoPlayerWrapper.Services.Implementation
 
         public int PlayerId { get; private set; }
 
+        public bool ShowDefaultControls
+        {
+            get => videoPlayer.ShowDefaultControls;
+            set => videoPlayer.ShowDefaultControls = value;
+        }
+
         public TimeSpan Duration => videoPlayer.Duration;
 
         public TimeSpan CurrentPosition => videoPlayer.CurrentPosition;
+
+        public TimeSpan BufferedPosition => videoPlayer.BufferedPosition;
 
         public VideoState Status => videoPlayer.Status;
 
@@ -88,6 +96,12 @@ namespace ExoPlayerWrapper.Services.Implementation
         {
             EnsureVideoPlayerNotNull();
             videoPlayer.Play();
+        }
+
+        public void Stop()
+        {
+            EnsureVideoPlayerNotNull();
+            videoPlayer.Stop();
         }
 
         public void SeekTo(TimeSpan position)
