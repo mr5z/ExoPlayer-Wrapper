@@ -43,7 +43,6 @@ namespace ExoPlayerWrapper.ViewModels
                 var bufferPosition = e.NewBufferedPosition.TotalMilliseconds;
                 var positionPercent = position / duration;
                 var bufferedPercent = bufferPosition / duration;
-                Debug.Log("Percent: {0}", positionPercent);
                 SliderValue = positionPercent;
                 BufferedStreamValue = bufferedPercent;
             }
@@ -108,6 +107,7 @@ namespace ExoPlayerWrapper.ViewModels
             var newPosition = sliderValue.NewValue * duration;
             var difference = Math.Abs(newPosition - oldPosition);
             var timeDifference = TimeSpan.FromMilliseconds(difference);
+            Debug.Log("interval: {0}s", timeDifference.TotalSeconds);
             if (timeDifference.TotalSeconds > 1.5)
             {
                 // skipped!
