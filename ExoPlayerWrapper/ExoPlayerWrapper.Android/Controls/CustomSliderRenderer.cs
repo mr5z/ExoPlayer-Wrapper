@@ -22,7 +22,6 @@ namespace ExoPlayerWrapper.Droid.Controls
 
         protected override View OnPrepareControl(ElementChangedEventArgs<CustomSlider> e)
         {
-            base.OnPrepareControl(e);
             return new View(Context);
         }
 

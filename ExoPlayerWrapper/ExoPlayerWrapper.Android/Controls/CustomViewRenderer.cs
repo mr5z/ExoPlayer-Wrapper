@@ -42,6 +42,6 @@ namespace ExoPlayerWrapper.Droid.Controls
 
         }
 
-        protected virtual TNativeView OnPrepareControl(ElementChangedEventArgs<TView> e);
+        protected abstract TNativeView OnPrepareControl(ElementChangedEventArgs<TView> e);
     }
 }

@@ -78,6 +78,8 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.3.0-pre" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CustomSliderRenderer.cs" />
+    <Compile Include="Controls\CustomViewRenderer.cs" />
     <Compile Include="Controls\VideoViewRenderer.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
