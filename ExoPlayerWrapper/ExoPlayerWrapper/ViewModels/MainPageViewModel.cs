@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ExoPlayerWrapper.Controls;
 using ExoPlayerWrapper.Helpers;
+using ExoPlayerWrapper.Models;
 using ExoPlayerWrapper.Services;
 using Prism.AppModel;
 using Prism.Commands;
@@ -22,6 +23,7 @@ namespace ExoPlayerWrapper.ViewModels
             ForwardCommand = new DelegateCommand(Forward);
             BackwardCommand = new DelegateCommand(Backward);
             PlayPauseCommand = new DelegateCommand(PlayPause);
+            SliderValueChangedCommand = new DelegateCommand<HistoryDoubleValue>(SliderValueChanged);
 
             videoService.VideoPlayerAttached += VideoService_VideoPlayerAttached;
         }
@@ -52,22 +54,36 @@ namespace ExoPlayerWrapper.ViewModels
             switch (e.NewState)
             {
                 case VideoState.Configured:
-                    //videoService.ShowDefaultControls = false;
-                    videoService.Load("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
-                    videoService.Play();
+                    videoService.ShowDefaultControls = false;
+                    videoService.Load("http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8");
+                    break;
+                case VideoState.Playing:
                     isPlaying = true;
+                    break;
+                case VideoState.Paused:
+                    isPlaying = false;
                     break;
             }
         }
 
         private void Forward()
         {
-            videoService.Forward(TimeSpan.FromSeconds(5));
+            var step = TimeSpan.FromSeconds(5);
+            var currentPosition = videoService.CurrentPosition;
+            var leap = (currentPosition + step).TotalMilliseconds;
+            var duration = videoService.Duration.TotalMilliseconds;
+            SliderValue = Math.Min(1, leap / duration);
+            videoService.Forward(step);
         }
 
         private void Backward()
         {
-            videoService.Backward(TimeSpan.FromSeconds(5));
+            var step = TimeSpan.FromSeconds(5);
+            var currentPosition = videoService.CurrentPosition;
+            var leap = (currentPosition - step).TotalMilliseconds;
+            var duration = videoService.Duration.TotalMilliseconds;
+            SliderValue = Math.Max(0, leap / duration);
+            videoService.Backward(step);
         }
 
         private void PlayPause()
@@ -80,7 +96,24 @@ namespace ExoPlayerWrapper.ViewModels
             {
                 videoService.Play();
             }
-            isPlaying = !isPlaying;
+        }
+
+        private void SliderValueChanged(HistoryDoubleValue sliderValue)
+        {
+            if (!sliderValue.IsValid)
+                return;
+
+            var duration = videoService.Duration.TotalMilliseconds;
+            var oldPosition = sliderValue.OldValue * duration;
+            var newPosition = sliderValue.NewValue * duration;
+            var difference = Math.Abs(newPosition - oldPosition);
+            var timeDifference = TimeSpan.FromMilliseconds(difference);
+            if (timeDifference.TotalSeconds > 1.5)
+            {
+                // skipped!
+                Debug.Log("Skipped!");
+                videoService.SeekTo(TimeSpan.FromMilliseconds(newPosition));
+            }
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -113,5 +146,6 @@ namespace ExoPlayerWrapper.ViewModels
         public DelegateCommand ForwardCommand { get; set; }
         public DelegateCommand BackwardCommand { get; set; }
         public DelegateCommand PlayPauseCommand { get; set; }
+        public DelegateCommand<HistoryDoubleValue> SliderValueChangedCommand { get; set; }
     }
 }

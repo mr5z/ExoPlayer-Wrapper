@@ -68,10 +68,6 @@ public class VideoViewRenderer : ViewRenderer<VideoView, PlayerView>, IVideoPlay
             {
                 ReportPositionChanged(CurrentPosition, BufferedPosition);
             }
-            timerIsRunning = timerIsRunning &&
-                Status != VideoState.NotReady &&
-                Status != VideoState.Configured &&
-                Status != VideoState.Stopped;
             return timerIsRunning;
         });
     }
