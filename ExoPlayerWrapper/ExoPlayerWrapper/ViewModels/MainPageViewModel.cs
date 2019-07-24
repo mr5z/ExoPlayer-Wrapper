@@ -107,7 +107,7 @@ namespace ExoPlayerWrapper.ViewModels
             var newPosition = sliderValue.NewValue * duration;
             var difference = Math.Abs(newPosition - oldPosition);
             var timeDifference = TimeSpan.FromMilliseconds(difference);
-            Debug.Log("interval: {0}s", timeDifference.TotalSeconds);
+            Debug.Log("interval 1s fluctuation: {0}s", Math.Abs(1 - timeDifference.TotalSeconds));
             if (timeDifference.TotalSeconds > 1.5)
             {
                 // skipped!

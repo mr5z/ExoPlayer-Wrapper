@@ -52,13 +52,15 @@
                 Minimum="0"
                 Maximum="1"
                 MinimumTrackColor="White"
-                ThumbColor="Transparent"
+                MaximumTrackColor="Transparent"
+                ThumbColor="White"
                 Value="{Binding BufferedStreamValue}"
             />
             <Slider
                 Minimum="0"
                 Maximum="1"
-                MinimumTrackColor="#80ff0000"
+                MinimumTrackColor="Red"
+                MaximumTrackColor="#80ffffff"
                 ThumbColor="Red"
                 Value="{Binding SliderValue}">
                 <Slider.Behaviors>

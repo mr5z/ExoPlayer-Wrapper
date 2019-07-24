@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.ExoPlayerWrapper">
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
     <application android:label="ExoPlayerWrapper.Android"
-                 android:usesCleartextTraffic="true"></application>
+                 android:usesCleartextTraffic="true"
+                 android:allowBackup="false"></application>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
